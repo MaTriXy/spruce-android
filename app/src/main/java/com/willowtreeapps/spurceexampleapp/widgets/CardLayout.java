@@ -20,41 +20,36 @@
  *
  */
 
-package com.willowtreeapps.spruce.sort;
+package com.willowtreeapps.spurceexampleapp.widgets;
 
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.willowtreeapps.spurceexampleapp.R;
 
-public class DefaultSort extends SortFunction {
+public class CardLayout extends LinearLayout {
 
-    private final long interObjectDelay;
-
-    /**
-     * Default sort; handles views with a provided offset delay
-     * @param interObjectDelay (long) delay between object animations
-     */
-    public DefaultSort(long interObjectDelay) {
-        this.interObjectDelay = interObjectDelay;
+    public CardLayout(Context context) {
+        super(context);
+        init();
     }
 
-    @Override
-    public List<SpruceTimedView> getViewListWithTimeOffsets(ViewGroup parent, List<View> children) {
-        List<SpruceTimedView> childTimedViews = new ArrayList<>();
-        long currentTimeOffset = 0L;
-
-        for (View childView : children) {
-            childTimedViews.add(new SpruceTimedView(childView, currentTimeOffset));
-            currentTimeOffset += interObjectDelay;
-        }
-
-        return childTimedViews;
+    public CardLayout(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        init();
     }
 
-    @Override
-    public void sortChildren(ViewGroup parent, List<View> children) {
-        // Do nothing, as the original order is maintained
+    public CardLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
     }
+
+    private void init() {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        inflater.inflate(R.layout.view_card, this, true);
+    }
+
 }

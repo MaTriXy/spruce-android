@@ -27,55 +27,36 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
-import com.willowtreeapps.spurceexampleapp.fragments.ControlsFragment;
-import com.willowtreeapps.spurceexampleapp.fragments.ViewFragment;
-import com.willowtreeapps.spurceexampleapp.pager.VerticalViewPager;
+import com.willowtreeapps.spurceexampleapp.fragments.ListViewFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-public class SpruceActivity extends AppCompatActivity
-        implements ViewFragment.OnParentAndChildCreationListener {
-
-    public ViewGroup parent;
-    public List<View> children = new ArrayList<>();
-    public Spinner sortDropDown;
+public class ListViewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.fragment_pager);
+        setContentView(R.layout.list_view_fragment);
 
         FragmentManager fm = getSupportFragmentManager();
-
-        VerticalViewPager verticalPager = (VerticalViewPager) findViewById(R.id.vertical_pager);
-        VerticalPagerAdapter adapter = new VerticalPagerAdapter(fm);
-        verticalPager.setAdapter(adapter);
-
-        Toolbar toolBar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolBar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Fragment listViewFragment = fm.findFragmentById(R.id.list_view_fragment);
+        if (listViewFragment == null) {
+            listViewFragment = ListViewFragment.newInstance();
+            fm.beginTransaction()
+                    .replace(R.id.list_view_fragment, listViewFragment)
+                    .commit();
         }
 
-        sortDropDown = (Spinner) findViewById(R.id.sort_selection);
-        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
-                R.array.sort_functions,
-                R.layout.spinner_item);
-        spinnerAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        sortDropDown.setAdapter(spinnerAdapter);
+        Toolbar toolBar = (Toolbar) findViewById(R.id.list_view_tool_bar);
+        setSupportActionBar(toolBar);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.list_view_name);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
@@ -88,45 +69,20 @@ public class SpruceActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_option:
+                startActivity(new Intent(this, SpruceActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                break;
+            case R.id.list_view_option:
                 break;
             case R.id.recycler_option:
                 startActivity(new Intent(this, RecyclerActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
                 break;
-            case R.id.list_view_option:
-                startActivity(new Intent(this, ListViewActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            default:
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onParentAndChildrenPrepared(ViewGroup parent, List<View> children) {
-        this.parent = parent;
-        this.children = children;
-    }
-
-    private class VerticalPagerAdapter extends FragmentStatePagerAdapter {
-
-        VerticalPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 1:
-                    return ControlsFragment.newInstance();
-                default:
-                    return ViewFragment.newInstance();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-    }
 }

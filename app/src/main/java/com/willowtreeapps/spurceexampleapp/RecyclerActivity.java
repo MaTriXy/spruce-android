@@ -77,6 +77,10 @@ public class RecyclerActivity extends AppCompatActivity {
                 break;
             case R.id.recycler_option:
                 break;
+            case R.id.list_view_option:
+                startActivity(new Intent(this, ListViewActivity.class)
+                        .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP));
+                break;
             default:
                 finish();
                 break;
